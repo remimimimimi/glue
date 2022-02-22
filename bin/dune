@@ -1,0 +1,8 @@
+(executable
+  (name bozon)
+  (modules bozon extr))
+
+(coq.extraction
+ (prelude Extr)
+ (extracted_modules extr)
+ (theories Theory))
