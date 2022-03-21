@@ -77,11 +77,11 @@
 
 (define string-literal/p
   (label/p
-   "string literal"
-   (do (char/p #\")
-       [chars <- (many/p string-char-or-escape/p)]
-       (char/p #\")
-       (pure ('string (list->string chars))))))
+    "string literal"
+    (do (char/p #\")
+        [chars <- (many/p string-char-or-escape/p)]
+        (char/p #\")
+        (pure ('string (list->string chars))))))
 
 (define symbol/p
   (label/p
@@ -95,13 +95,14 @@
 
 (define (atom/p)
   (label/p
-    "atom"
+   ("atom"
     (do [v <- (or/p number/p
                     symbol/p
                     string-literal/p
-                    (atom-list/p))]
-        (pure v))))
-   
+                    (atom-list/p)
+                    (atom-list-with-syntax-op/p))]
+        (pure v)))))
+
 (define (atom-list/p)
   (label/p
     "list of atoms"
@@ -114,9 +115,29 @@
         (char/p #\))
         (pure l))))
 
+(define syntax-op/p
+  (or/p (char/p #\')       ;; Quote
+        (char/p #\`)       ;; Quasi-quote
+        (char/p #\,)       ;; Quasi-quote eval
+        (string/p ",@")    ;; Quasi-quote splash eval
+        (string/p "#'")    ;; Unquote
+        (string/p "#`")    ;; Quasi-unquote
+        (string/p "#,")    ;; Quasi-unquote
+        (string/p "#,@"))) ;; Quasi-unquote splash
+
+(define (atom-list-with-syntax-op/p)
+  (do [op <- syntax-op/p]
+      [atom-list <- (atom-list/p)]
+      (pure (list op atom-list))))
+
 (define program/p
   (do ws/p
       [v <- (many/p (atom-list/p) #:sep space-sep/p)]
       ws/p
       eof/p
       (pure v)))
+
+(define (parse-program s)
+  (parse-result! (parse-string program/p s)))
+
+(provide parse-program)
