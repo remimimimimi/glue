@@ -1,3 +1,0 @@
-bozon
-=====
-README text here.

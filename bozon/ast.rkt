@@ -1,2 +1,0 @@
-#lang typed/racket
-
