@@ -87,6 +87,10 @@ impl Span {
     pub fn end(&self) -> usize {
         self.start + usize::from(self.len)
     }
+
+    pub fn len(&self) -> usize {
+        self.len as usize
+    }
 }
 
 impl From<ops::Range<usize>> for Span {
