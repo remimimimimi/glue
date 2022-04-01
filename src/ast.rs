@@ -7,14 +7,52 @@ pub struct File {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub enum Atom {
+pub struct Atom {
+    pub prefix: Option<PrefixKind>,
+    pub kind: AtomKind,
+    pub span: Span,
+}
+
+impl Atom {
+    pub fn new(prefix: Option<PrefixKind>, kind: AtomKind, span: ops::Range<usize>) -> Self {
+        Atom {
+            prefix,
+            kind,
+            span: Span::new(span.start, span.end)
+        }
+    }
+}
+
+#[non_exhaustive]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+pub enum PrefixKind {
+    /// '
+    Quote,
+    /// `
+    QuasiQuote,
+    /// ,
+    Unquote,
+    /// ,@
+    UnquoteSplicing,
+
+    /// #'
+    Syntax,
+    /// #`
+    QuasiSyntax,
+    /// #,
+    Unsyntax,
+    /// #,@
+    UnsyntaxSplicing,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+pub enum AtomKind {
     /// May be function name, smile or even number
     Ident(String),
     String(String),
-    List(Vec<Atom>),
+    List(Vec<Atom>, DelimiterKind),
 }
 
-// TODO: Add to parser and atom
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub enum DelimiterKind {
     /// ()
@@ -26,23 +64,18 @@ pub enum DelimiterKind {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub struct Node<T> {
-    pub item: T,
-    pub span: Span,
-}
-
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct Span {
     start: usize,
-    /// Hope that this'll be enough for
-    end: u16,
+    /// XXX: Hope that this'll be enough for everything :)
+    len: u16,
 }
 
 impl Span {
     pub fn new(start: usize, end: usize) -> Self {
+        assert!(start <= end);
         Self {
             start,
-            end: (end - start)
+            len: (end - start)
                 .try_into()
                 .expect("oops, span out of range of u16 number :^("),
         }
@@ -52,7 +85,13 @@ impl Span {
     }
 
     pub fn end(&self) -> usize {
-        self.start + usize::from(self.end)
+        self.start + usize::from(self.len)
+    }
+}
+
+impl From<ops::Range<usize>> for Span {
+    fn from(r: ops::Range<usize>) -> Self {
+        Span::new(r.start, r.end)
     }
 }
 
@@ -60,14 +99,14 @@ impl ops::Add for Span {
     type Output = Span;
     fn add(self, other: Self) -> Self::Output {
         let start = self.start().min(other.start());
-        let end = if self.end() > other.end() {
+        let len = if self.end() > other.end() {
             self.end()
         } else {
             other.end()
         } - start;
         Self {
             start,
-            end: end
+            len: len
                 .try_into()
                 .expect("oops, span out of range of u16 number :^("),
         }
