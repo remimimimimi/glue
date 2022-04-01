@@ -116,32 +116,33 @@ mod tests {
     }
 
     #[test]
-    fn string() {
-        assert_eq!(
-            super::string().parse(r#""hellow""#),
-            Ok(AtomKind::String(r#"hellow"#.into())),
-        );
-
-        assert_eq!(
-            super::string().parse(r#""Uwu" "#),
-            Ok(AtomKind::String(r#"Uwu"#.into())),
-        );
-
-        assert_eq!(
-            super::string().parse(r#""Hello\nWorld!""#),
-            Ok(AtomKind::String(r#"Hello\nWorld!"#.into())),
-        );
-
+    fn span() {
         assert_eq!(
             super::string()
                 .map_with_span(|kind, span| Atom::new(None, kind, span))
-                .parse(r#""""#),
+                .parse(r#"""  "#),
             Ok(Atom {
                 prefix: None,
                 kind: AtomKind::String(r#""#.into()),
                 span: Span::new(0, 2)
             }),
         );
+    }
+
+    #[quickcheck]
+    fn string(input: String) -> bool {
+        let parser = super::string().map_with_span(|kind, span| Atom::new(None, kind, span));
+
+        if let Ok(Atom {
+            prefix: _,
+            kind: AtomKind::String(s),
+            span,
+        }) = parser.parse(input)
+        {
+            span.len() == s.len() + 2
+        } else {
+            true
+        }
     }
 
     #[test]
