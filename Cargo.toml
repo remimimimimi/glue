@@ -1,0 +1,17 @@
+[package]
+name = "bozon"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+chumsky = "0.8"
+miette = { version = "4.3", features = ["fancy"] }
+salsa = "0.16"
+inkwell = { git = "https://github.com/TheDan64/inkwell", branch = "master", features = ["llvm13-0"] }
+hashbrown = "0.12"
+
+[dev-dependencies]
+quickcheck = "1"
+quickcheck_macros = "1"
