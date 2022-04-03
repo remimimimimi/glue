@@ -50,17 +50,17 @@ pub enum AtomKind {
     /// May be function name, smile or even number
     Ident(String),
     String(String),
-    List(Vec<Atom>, DelimiterKind),
+    List(Vec<Atom>, BracketKind),
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub enum DelimiterKind {
+pub enum BracketKind {
     /// ()
-    Parens,
+    Round,
     /// {}
-    Brackets,
+    Curly,
     /// []
-    Braces,
+    Square,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]

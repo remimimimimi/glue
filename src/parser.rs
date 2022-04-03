@@ -1,4 +1,4 @@
-use chumsky::{error, prelude::*};
+use chumsky::prelude::*;
 
 use crate::ast::*;
 
@@ -42,16 +42,16 @@ fn program() -> impl Parser<char, Vec<Atom>, Error = Simple<char>> {
                 l.clone()
                     .separated_by(text::whitespace())
                     .delimited_by(just('(').padded(), just(')').padded())
-                    .map(|lst| AtomKind::List(lst, DelimiterKind::Parens))
+                    .map(|lst| AtomKind::List(lst, BracketKind::Round))
                     .or(l
                         .clone()
                         .separated_by(text::whitespace())
                         .delimited_by(just('{').padded(), just('}').padded())
-                        .map(|lst| AtomKind::List(lst, DelimiterKind::Brackets)))
+                        .map(|lst| AtomKind::List(lst, BracketKind::Curly)))
                     .or(l
                         .separated_by(text::whitespace())
                         .delimited_by(just('[').padded(), just(']').padded())
-                        .map(|lst| AtomKind::List(lst, DelimiterKind::Braces)))
+                        .map(|lst| AtomKind::List(lst, BracketKind::Square)))
                     .or(string())
                     .or(ident()),
             )
@@ -74,11 +74,12 @@ mod tests {
     #[test]
     fn simple() {
         use super::program;
+
         assert_eq!(
             program().parse("()"),
             Ok(vec![Atom {
                 prefix: None,
-                kind: AtomKind::List(vec![], DelimiterKind::Parens),
+                kind: AtomKind::List(vec![], BracketKind::Round),
                 span: Span::new(0, 2)
             }])
         );
@@ -87,7 +88,7 @@ mod tests {
             program().parse("( )"),
             Ok(vec![Atom {
                 prefix: None,
-                kind: AtomKind::List(vec![], DelimiterKind::Parens),
+                kind: AtomKind::List(vec![], BracketKind::Round),
                 span: Span::new(0, 3)
             }])
         );
@@ -96,7 +97,7 @@ mod tests {
             super::program().parse("\t\r\n (\t\r\n )"),
             Ok(vec![Atom {
                 prefix: None,
-                kind: AtomKind::List(vec![], DelimiterKind::Parens),
+                kind: AtomKind::List(vec![], BracketKind::Round),
                 span: Span::new(4, 10)
             }])
         );
@@ -172,7 +173,7 @@ mod tests {
                         kind: AtomKind::String("Hello".into()),
                         span: Span::new(2, 9)
                     }],
-                    DelimiterKind::Parens
+                    BracketKind::Round
                 ),
                 span: Span::new(0, 10)
             }])
@@ -188,7 +189,7 @@ mod tests {
                         kind: AtomKind::Ident("1".into()),
                         span: Span::new(1, 2)
                     }],
-                    DelimiterKind::Parens
+                    BracketKind::Round
                 ),
                 span: Span::new(0, 3)
             }])
@@ -204,7 +205,7 @@ mod tests {
                         kind: AtomKind::Ident("1".into()),
                         span: Span::new(2, 3)
                     }],
-                    DelimiterKind::Parens
+                    BracketKind::Round
                 ),
                 span: Span::new(0, 4)
             }])
@@ -220,7 +221,7 @@ mod tests {
                         kind: AtomKind::Ident("1".into()),
                         span: Span::new(1, 2)
                     }],
-                    DelimiterKind::Parens
+                    BracketKind::Round
                 ),
                 span: Span::new(0, 4)
             }])
@@ -236,7 +237,7 @@ mod tests {
                         kind: AtomKind::Ident("1".into()),
                         span: Span::new(2, 3)
                     }],
-                    DelimiterKind::Parens
+                    BracketKind::Round
                 ),
                 span: Span::new(0, 5)
             }])
