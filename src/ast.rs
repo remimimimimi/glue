@@ -18,7 +18,7 @@ impl Atom {
         Atom {
             prefix,
             kind,
-            span: Span::new(span.start, span.end)
+            span: Span::new(span.start, span.end),
         }
     }
 }
@@ -73,6 +73,7 @@ pub struct Span {
 impl Span {
     pub fn new(start: usize, end: usize) -> Self {
         assert!(start <= end);
+
         Self {
             start,
             len: (end - start)
@@ -80,6 +81,7 @@ impl Span {
                 .expect("oops, span out of range of u16 number :^("),
         }
     }
+
     pub fn start(&self) -> usize {
         self.start
     }
@@ -108,12 +110,34 @@ impl ops::Add for Span {
         } else {
             other.end()
         } - start;
+
         Self {
             start,
             len: len
                 .try_into()
                 .expect("oops, span out of range of u16 number :^("),
         }
+    }
+}
+
+impl chumsky::span::Span for Span {
+    type Context = ();
+    type Offset = usize;
+
+    fn new((): Self::Context, range: std::ops::Range<Self::Offset>) -> Self {
+        range.into()
+    }
+
+    fn context(&self) -> Self::Context {
+        ()
+    }
+
+    fn start(&self) -> Self::Offset {
+        <Span as Self>::start(self)
+    }
+
+    fn end(&self) -> Self::Offset {
+        <Span as Self>::end(self)
     }
 }
 
