@@ -5,7 +5,7 @@ the academics and the engineering worlds.
 
 ## Features
 
-- Easy to use or performant (by user choice) memory model.
+- Easy to use and performant (by user choice) memory model.
 - Ultimate package manager that can handle bozon packages, as well as projects
   in other languages.
 - JIT compilation, compilation, and interpretation for the same language to match different use cases.
