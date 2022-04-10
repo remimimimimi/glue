@@ -1,5 +1,0 @@
--*- mode: org; coding: utf-8; -*-
-
-#+TITLE: Bozon
-
-**
