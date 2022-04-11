@@ -133,11 +133,11 @@ impl chumsky::span::Span for Span {
     }
 
     fn start(&self) -> Self::Offset {
-        <Span as Self>::start(self)
+        Span::start(self)
     }
 
     fn end(&self) -> Self::Offset {
-        <Span as Self>::end(self)
+        Span::end(self)
     }
 }
 

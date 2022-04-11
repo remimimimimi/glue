@@ -4,7 +4,7 @@
 pub struct Ctx {
     symbol_table: (),
     proto_symbol_table: (),
-    strategy: StrategyKind
+    strategy: StrategyKind,
 }
 
 pub enum StrategyKind {
