@@ -1,10 +1,6 @@
 use std::ops;
 
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub struct File {
-    source: String,
-    ast: Vec<Atom>,
-}
+pub type Ast = Vec<Atom>;
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct Atom {
@@ -34,15 +30,6 @@ pub enum PrefixKind {
     Unquote,
     /// ,@
     UnquoteSplicing,
-
-    /// #'
-    Syntax,
-    /// #`
-    QuasiSyntax,
-    /// #,
-    Unsyntax,
-    /// #,@
-    UnsyntaxSplicing,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]

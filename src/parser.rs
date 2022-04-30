@@ -8,10 +8,6 @@ fn prefix() -> impl Parser<char, PrefixKind, Error = Simple<char>> {
         .or(just('`').map(|_| PrefixKind::QuasiQuote))
         .or(just(',').map(|_| PrefixKind::Unquote))
         .or(just(",@").map(|_| PrefixKind::UnquoteSplicing))
-        .or(just("#'").map(|_| PrefixKind::Syntax))
-        .or(just("#`").map(|_| PrefixKind::QuasiSyntax))
-        .or(just("#,").map(|_| PrefixKind::Unsyntax))
-        .or(just("#,@").map(|_| PrefixKind::UnsyntaxSplicing))
         .labelled("prefix")
 }
 
@@ -64,6 +60,10 @@ fn program() -> impl Parser<char, Vec<Atom>, Error = Simple<char>> {
     });
 
     sexp.separated_by(text::whitespace()).collect::<Vec<Atom>>()
+}
+
+fn parse(source: &str) -> Result<Ast, Vec<Simple<char>>> {
+    program().parse(source)
 }
 
 #[cfg(test)]
