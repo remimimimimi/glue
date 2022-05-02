@@ -1,0 +1,14 @@
+[package]
+name = "bozon-ast"
+version = "0.1.0"
+edition = "2021"
+authors = ["Rémi <remimimimimi@protonmail.com>"]
+description = "Main ast of bozon language"
+homepage = "https://github.com/remimimimimi/bozon/crates/bozon-ast"
+repository = "https://github.com/remimimimimi/bozon.git"
+readme = "README.md"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bozon-span = { path = "../bozon-span" }

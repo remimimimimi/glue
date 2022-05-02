@@ -1,0 +1,13 @@
+[package]
+name = "bozon-compiler"
+version = "0.1.0"
+edition = "2021"
+description = "Bozon to llvm compilation"
+homepage = "https://github.com/remimimimimi/bozon/crates/bozon-errors"
+repository = "https://github.com/remimimimimi/bozon.git"
+readme = "README.md"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+inkwell = { git = "https://github.com/TheDan64/inkwell", branch = "master", features = ["llvm13-0"] }

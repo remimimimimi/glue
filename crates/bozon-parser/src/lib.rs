@@ -1,6 +1,12 @@
+#[cfg(test)]
+extern crate quickcheck;
+#[cfg(test)]
+#[macro_use(quickcheck)]
+extern crate quickcheck_macros;
+
 use chumsky::prelude::*;
 
-use crate::ast::*;
+use bozon_ast::*;
 
 fn prefix() -> impl Parser<char, PrefixKind, Error = Simple<char>> {
     just('\'')
@@ -62,14 +68,16 @@ fn program() -> impl Parser<char, Vec<Atom>, Error = Simple<char>> {
     sexp.separated_by(text::whitespace()).collect::<Vec<Atom>>()
 }
 
-fn parse(source: &str) -> Result<Ast, Vec<Simple<char>>> {
+pub fn parse(source: &str) -> Result<Ast, Vec<Simple<char>>> {
     program().parse(source)
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::ast::*;
     use chumsky::Parser;
+
+    use bozon_ast::*;
+    use bozon_span::Span;
 
     #[test]
     fn simple() {

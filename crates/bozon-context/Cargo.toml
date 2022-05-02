@@ -1,0 +1,13 @@
+[package]
+name = "bozon-context"
+version = "0.1.0"
+edition = "2021"
+authors = ["Rémi <remimimimimi@protonmail.com>"]
+description = "Bozon compilation context"
+homepage = "https://github.com/remimimimimi/bozon/crates/bozon-errors"
+repository = "https://github.com/remimimimimi/bozon.git"
+readme = "README.md"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
