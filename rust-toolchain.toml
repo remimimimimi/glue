@@ -1,0 +1,4 @@
+[toolchain]
+channel = "stable"
+components = ["miri", "rust-mingw"]
+profile = "default"
