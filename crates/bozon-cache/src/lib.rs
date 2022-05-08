@@ -9,11 +9,6 @@ use std::{
     hash::{BuildHasher, Hash},
 };
 
-#[cfg(feature = "serde")]
-use serde::{Deserialize, Serialize};
-#[cfg(feature = "serde")]
-use serde_with::serde_as;
-
 #[cfg(feature = "hashbrown")]
 use hashbrown::HashMap;
 #[cfg(not(feature = "hashbrown"))]
@@ -64,15 +59,12 @@ macro_rules! cache {
 }
 
 /// Newtype over `HashMap` that provides different convinitet features.
-#[cfg_attr(feature = "serde", serde_as)]
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, Default)]
 pub struct Cache<K, V, S = DefaultHasher>
 where
     K: Hash + Eq,
     S: BuildHasher + Default,
 {
-    #[cfg_attr(feature = "serde", serde_as(as = "Vec<(_, _)>"))]
     map: HashMap<K, V, S>,
 }
 
@@ -92,6 +84,21 @@ impl<K: Hash + Eq, V> Cache<K, V> {
         }
     }
 }
+
+// Need manual implementation because compiler cannot automatically derive
+// ParitalEq for RandomState of hash
+impl<K: Hash + Eq, V: PartialEq> PartialEq for Cache<K, V> {
+    fn eq(&self, other: &Self) -> bool {
+        if self.len() != other.len() {
+            return false;
+        }
+
+        self.iter()
+            .all(|(key, value)| other.get(key).map_or(false, |v| *value == *v))
+    }
+}
+
+impl<K: Hash + Eq, V: PartialEq> Eq for Cache<K, V> {}
 
 impl<K: Hash + Eq, V, S: BuildHasher + Default> Cache<K, V, S> {
     /// Creates a new `Cache` that uses the provided hash builder.
@@ -359,5 +366,78 @@ impl<'a, K: Hash + Eq, V, S: BuildHasher + Default> IntoIterator for &'a mut Cac
 
     fn into_iter(self) -> IterMut<'a, K, V> {
         self.map.iter_mut()
+    }
+}
+
+// Need manual implementation because compiler cannot automatically derive
+// Serialize for RandomState of hash
+#[cfg(feature = "serde")]
+impl<K, V, H> serde::Serialize for Cache<K, V, H>
+where
+    K: Hash + Eq + serde::Serialize,
+    V: serde::Serialize,
+    H: BuildHasher + Default,
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        use serde::ser::SerializeMap;
+
+        let mut map = serializer.serialize_map(Some(self.map.len()))?;
+
+        for (k, v) in self.map.iter() {
+            map.serialize_entry(&k, &v)?;
+        }
+
+        map.end()
+    }
+}
+
+// Need manual implementation because compiler cannot automatically derive
+// Deserialize for RandomState of hash
+#[cfg(feature = "serde")]
+impl<'de, K, V> serde::Deserialize<'de> for Cache<K, V>
+where
+    K: Hash + Eq + serde::Deserialize<'de>,
+    V: serde::Deserialize<'de>,
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        struct MapVisitor<K: Hash + Eq, V> {
+            marker: std::marker::PhantomData<Cache<K, V>>,
+        }
+
+        impl<'de, K, V> serde::de::Visitor<'de> for MapVisitor<K, V>
+        where
+            K: Hash + Eq + serde::Deserialize<'de>,
+            V: serde::Deserialize<'de>,
+        {
+            type Value = Cache<K, V>;
+
+            fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                formatter.write_str("a map")
+            }
+
+            fn visit_map<A>(self, mut map: A) -> Result<Self::Value, A::Error>
+            where
+                A: serde::de::MapAccess<'de>,
+            {
+                let mut values = Cache::new();
+
+                while let Some((key, value)) = map.next_entry()? {
+                    values.put(key, value);
+                }
+
+                Ok(values)
+            }
+        }
+
+        let visitor = MapVisitor {
+            marker: std::marker::PhantomData,
+        };
+        deserializer.deserialize_map(visitor)
     }
 }
