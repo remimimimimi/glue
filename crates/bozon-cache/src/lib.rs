@@ -11,6 +11,8 @@ use std::{
 
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "serde")]
+use serde_with::serde_as;
 
 #[cfg(feature = "hashbrown")]
 use hashbrown::HashMap;
@@ -62,6 +64,7 @@ macro_rules! cache {
 }
 
 /// Newtype over `HashMap` that provides different convinitet features.
+#[cfg_attr(feature = "serde", serde_as)]
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Cache<K, V, S = DefaultHasher>
@@ -69,6 +72,7 @@ where
     K: Hash + Eq,
     S: BuildHasher + Default,
 {
+    #[cfg_attr(feature = "serde", serde_as(as = "Vec<(_, _)>"))]
     map: HashMap<K, V, S>,
 }
 

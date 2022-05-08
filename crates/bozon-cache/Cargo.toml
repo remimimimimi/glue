@@ -14,3 +14,4 @@ default = ["hashbrown", "serde"]
 [dependencies]
 hashbrown = { version = "0.12", features = ["serde"], optional = true }
 serde = { version = "1", features = ["derive"], optional = true }
+serde_with = "1"
