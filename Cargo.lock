@@ -96,14 +96,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bozon-cache"
-version = "0.1.0"
-dependencies = [
- "hashbrown 0.12.0",
- "serde",
-]
-
-[[package]]
 name = "bozon-compiler"
 version = "0.1.0"
 dependencies = [
@@ -176,7 +168,7 @@ name = "chumsky"
 version = "0.8.0"
 source = "git+https://github.com/remimimimimi/chumsky?rev=990153a9e77cad8ad62b4e5c6c09318c9bd1226f#990153a9e77cad8ad62b4e5c6c09318c9bd1226f"
 dependencies = [
- "hashbrown 0.11.2",
+ "hashbrown",
  "stacker",
 ]
 
@@ -260,16 +252,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "hashbrown"
-version = "0.12.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8c21d40587b92fa6a6c6e3c1bdbf87d75511db5672f9c93175574b3a00df1758"
-dependencies = [
- "ahash 0.7.6",
- "serde",
-]
-
-[[package]]
 name = "heck"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -294,7 +276,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0f647032dfaa1f8b6dc29bd3edb7bbef4861b8b8007ebb118d6db284fd59f6ee"
 dependencies = [
  "autocfg",
- "hashbrown 0.11.2",
+ "hashbrown",
 ]
 
 [[package]]
@@ -671,26 +653,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "00b0bef5b7f9e0df16536d3961cfb6e84331c065b4066afb39768d0e319411f7"
 dependencies = [
  "pest",
-]
-
-[[package]]
-name = "serde"
-version = "1.0.137"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "61ea8d54c77f8315140a05f4c7237403bf38b72704d031543aa1d16abbf517d1"
-dependencies = [
- "serde_derive",
-]
-
-[[package]]
-name = "serde_derive"
-version = "1.0.137"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1f26faba0c3959972377d3b2d306ee9f71faee9714294e41bb777f83f88578be"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
 ]
 
 [[package]]
