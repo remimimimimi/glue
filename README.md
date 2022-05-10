@@ -24,7 +24,7 @@ cargo run --releaase
 
 - [x] General AST
 - [x] Parser
-- [ ] Query system
+- [X] Query system
 - [ ] Protolang
   + [ ] AST
   + [ ] Parser

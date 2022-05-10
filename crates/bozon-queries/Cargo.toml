@@ -11,3 +11,8 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+bozon-ast = { path = "../bozon-ast" }
+bozon-parser = { path = "../bozon-parser" }
+thiserror = "1"
+chumsky = { git = "https://github.com/remimimimimi/chumsky", rev = "990153a9e77cad8ad62b4e5c6c09318c9bd1226f" }
+salsa = "0.17.0-pre.2"
