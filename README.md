@@ -17,7 +17,7 @@ the academics and the engineering worlds.
 Install rust via your package manager or [rustup](https://rustup.rs/), then run following command
 
 ``` sh
-cargo run --releaase
+cargo run --release
 ```
 
 ## Roadmap
