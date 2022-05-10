@@ -36,7 +36,45 @@ fn string() -> impl Parser<char, AtomKind, Error = Simple<char>> {
         .labelled("string")
 }
 
-fn program() -> impl Parser<char, Vec<Atom>, Error = Simple<char>> {
+/// Returns program parser
+///
+/// # Example
+///
+/// ```
+/// use bozon_parser::program;
+/// use bozon_ast::*;
+/// use bozon_span::Span;
+/// use chumsky::Parser;
+///
+/// let src = "(+ 1 1)";
+/// let ast = vec![Atom {
+///     prefix: None,
+///     kind: AtomKind::List(
+///         vec![
+///             Atom {
+///                 prefix: None,
+///                 kind: AtomKind::Ident("+".into()),
+///                 span: Span::new(1, 2)
+///             },
+///             Atom {
+///                 prefix: None,
+///                 kind: AtomKind::Ident("1".into()),
+///                 span: Span::new(3, 4)
+///             },
+///             Atom {
+///                 prefix: None,
+///                 kind: AtomKind::Ident("1".into()),
+///                 span: Span::new(5, 6)
+///             }
+///         ],
+///         BracketKind::Round
+///     ),
+///     span: Span::new(0, 7)
+/// }];
+/// assert_eq!(program().parse(src), Ok(ast));
+///
+/// ```
+pub fn program() -> impl Parser<char, Vec<Atom>, Error = Simple<char>> {
     let sexp = recursive(|l| {
         prefix()
             .or_not()
@@ -66,10 +104,6 @@ fn program() -> impl Parser<char, Vec<Atom>, Error = Simple<char>> {
     });
 
     sexp.separated_by(text::whitespace()).collect::<Vec<Atom>>()
-}
-
-pub fn parse(source: &str) -> Result<Ast, Vec<Simple<char>>> {
-    program().parse(source)
 }
 
 #[cfg(test)]
@@ -113,7 +147,8 @@ mod tests {
 
     #[quickcheck]
     fn prefix(input: String) -> bool {
-        (input.starts_with('\'')
+        // NOTE: is_ascii_alphanumeric because with is_alphanumeric it sometimes fails on \u{80} character for some reason.
+        (input.chars().all(|x| char::is_ascii_alphanumeric(&x)) && input.starts_with('\'')
             || input.starts_with('`')
             || input.starts_with(',')
             || input.starts_with(",@")

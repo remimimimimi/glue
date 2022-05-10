@@ -13,8 +13,7 @@ readme = "README.md"
 [dependencies]
 bozon-ast = { path = "../bozon-ast" }
 bozon-span = { path = "../bozon-span" }
-
-chumsky = "0.8"
+chumsky = { git = "https://github.com/remimimimimi/chumsky", rev = "990153a9e77cad8ad62b4e5c6c09318c9bd1226f" }
 
 [dev-dependencies]
 quickcheck = "1"
