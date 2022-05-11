@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::{path::PathBuf, sync::Arc};
 
 use bozon_ast::Ast;
 
@@ -19,13 +19,16 @@ pub trait Parser: salsa::Database + crate::groups::Vfs {
     /// let db = Database::default();
     /// let parse_result = db.ast(PathBuf::from("/path/to/file"));
     /// ```
-    fn ast(&self, filepath: PathBuf) -> Result<Ast, Vec<chumsky::error::Simple<char>>>;
+    fn ast(&self, filepath: PathBuf) -> Result<Arc<Ast>, Vec<chumsky::error::Simple<char>>>;
 }
 
 /// This is an implementation of a trait function.
-pub fn ast(db: &dyn Parser, filepath: PathBuf) -> Result<Ast, Vec<chumsky::error::Simple<char>>> {
+pub fn ast(
+    db: &dyn Parser,
+    filepath: PathBuf,
+) -> Result<Arc<Ast>, Vec<chumsky::error::Simple<char>>> {
     use chumsky::Parser;
 
     let source = db.read_file(filepath);
-    bozon_parser::program().parse(source.as_str())
+    bozon_parser::program().parse(source.as_str()).map(Arc::new)
 }
