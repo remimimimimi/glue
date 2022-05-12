@@ -32,7 +32,7 @@
           bozon = naersk-lib.buildPackage {
             pname = "bozon";
             root = ./.;
-            buildInputs = [ pkgs.llvmPackages_13.libllvm ];
+            buildInputs = [ pkgs.llvm_14 ];
           };
         };
 
@@ -44,8 +44,8 @@
 
         # `nix develop`
         devShell = pkgs.mkShell {
-          nativeBuildInputs = [ rust-toolchain pkgs.llvmPackages_13.libllvm ];
-          LIBCLANG_PATH = "${pkgs.llvmPackages_13.libclang.lib}/lib";
+          nativeBuildInputs = [ rust-toolchain pkgs.llvm_14 ];
+          LIBCLANG_PATH = "${pkgs.llvmPackages_14.libclang.lib}/lib";
         };
       });
 }
