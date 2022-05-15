@@ -17,7 +17,7 @@ pub trait Parser: salsa::Database + crate::groups::Vfs {
     /// use bozon_queries::*;
     ///
     /// let db = Database::default();
-    /// let parse_result = db.ast(PathBuf::from("/path/to/file"));
+    /// let parse_result = db.sexp_ast(PathBuf::from("/path/to/file"));
     /// ```
     fn sexp_ast(&self, filepath: PathBuf) -> Result<Ast, Vec<chumsky::error::Simple<char>>>;
 }
