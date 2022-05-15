@@ -35,8 +35,8 @@ fn string() -> impl Parser<char, AtomKind, Error = Simple<char>> {
 /// # Example
 ///
 /// ```
-/// use bozon_parser::program;
-/// use bozon_ast::*;
+/// use bozon_parser::sexp::program;
+/// use bozon_ast::sexp::*;
 /// use bozon_span::Span;
 /// use chumsky::Parser;
 ///
@@ -104,7 +104,7 @@ pub fn program() -> impl Parser<char, Vec<Atom>, Error = Simple<char>> {
 mod tests {
     use chumsky::Parser;
 
-    use bozon_ast::*;
+    use bozon_ast::sexp::*;
     use bozon_span::Span;
 
     #[test]

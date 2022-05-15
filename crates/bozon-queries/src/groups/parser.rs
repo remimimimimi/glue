@@ -14,7 +14,7 @@ pub trait Parser: salsa::Database + crate::groups::Vfs {
     ///
     /// ```no_run
     /// use std::path::PathBuf;
-    /// use bozon_queries::*;
+    /// use bozon_queries::{Database, groups::Parser};
     ///
     /// let db = Database::default();
     /// let parse_result = db.sexp_ast(PathBuf::from("/path/to/file"));
