@@ -47,6 +47,7 @@ pub(crate) mod values;
 
 /// Repository of all cache.
 #[salsa::database(groups::VfsStorage, groups::LanguageStorage, groups::ParserStorage)]
+#[derive(Default)]
 pub struct Database {
     storage: salsa::Storage<Self>,
 }
