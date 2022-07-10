@@ -39,6 +39,7 @@
             haskellPackages.haskell-language-server # you must build it with your ghc to work
             ghcid
             cabal-install
+            (agda.withPackages (ps: [ ps.standard-library ]))
           ];
           # FIXME: Fix dependent-hashmap to fix this
           # inputsFrom = builtins.attrValues self.packages.${system};
