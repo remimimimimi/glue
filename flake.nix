@@ -1,51 +1,44 @@
+# SPDX-FileCopyrightText: 2021 Serokell <https://serokell.io/>
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# For information about flakes:
+# https://serokell.io/blog/practical-nix-flakes
+
 {
-  description = "My cute Rust crate!";
+  description = "My haskell application";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    naersk = {
-      url = "github:nmattia/naersk";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    fenix = {
-      url = "github:nix-community/fenix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixpkgs.url = "github:NixOS/nixpkgs";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, naersk, fenix, flake-utils }:
+  outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        rust-toolchain = fenix.packages.${system}.fromToolchainFile {
-          file = ./rust-toolchain.toml;
-          sha256 = "otgm+7nEl94JG/B+TYhWseZsHV1voGcBsW/lOD2/68g=";
-        };
-        naersk-lib = naersk.lib.${system}.override {
-          cargo = rust-toolchain;
-          rustc = rust-toolchain;
-        };
-      in rec {
-        # `nix build`
-        packages = {
-          bozon = naersk-lib.buildPackage {
-            pname = "bozon";
-            root = ./.;
-            buildInputs = [ pkgs.llvm_14 ];
+
+        haskellPackages = pkgs.haskellPackages;
+
+        jailbreakUnbreak = pkg:
+          pkgs.haskell.lib.doJailbreak (pkg.overrideAttrs (_: { meta = { }; }));
+
+        packageName = "bozon";
+      in {
+        packages.${packageName} =
+          haskellPackages.callCabal2nix packageName self rec {
+            rock = jailbreakUnbreak haskellPackages.rock;
           };
-        };
 
-        defaultPackage = packages.bozon;
+        defaultPackage = self.packages.${system}.${packageName};
 
-        # `nix run`
-        apps.bozon = flake-utils.lib.mkApp { drv = packages.bozon; };
-        defaultApp = apps.bozon;
-
-        # `nix develop`
         devShell = pkgs.mkShell {
-          nativeBuildInputs = [ rust-toolchain pkgs.llvm_14 ];
-          LIBCLANG_PATH = "${pkgs.llvmPackages_14.libclang.lib}/lib";
+          buildInputs = with pkgs; [
+            haskellPackages.haskell-language-server # you must build it with your ghc to work
+            ghcid
+            cabal-install
+          ];
+          inputsFrom = builtins.attrValues self.packages.${system};
         };
       });
 }
