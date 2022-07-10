@@ -25,9 +25,11 @@
 
         packageName = "bozon";
       in {
-        packages.${packageName} =
-          haskellPackages.callCabal2nix packageName self rec {
-            rock = jailbreakUnbreak haskellPackages.rock;
+        packages.${packageName} = haskellPackages.callCabal2nix packageName self
+          rec {
+            # FIXME: dependent-hashmap =
+            #   jailbreakUnbreak haskellPackages.dependent-hashmap;
+            # rock = jailbreakUnbreak haskellPackages.rock;
           };
 
         defaultPackage = self.packages.${system}.${packageName};
@@ -38,7 +40,8 @@
             ghcid
             cabal-install
           ];
-          inputsFrom = builtins.attrValues self.packages.${system};
+          # FIXME: Fix dependent-hashmap to fix this
+          # inputsFrom = builtins.attrValues self.packages.${system};
         };
       });
 }
