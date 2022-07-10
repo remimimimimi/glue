@@ -31,6 +31,7 @@ executable bozon
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
-    build-depends:    base ^>=4.15.1.0
+    build-depends:    base ^>=4.15.1.0, rock
+
     hs-source-dirs:   app
     default-language: Haskell2010
