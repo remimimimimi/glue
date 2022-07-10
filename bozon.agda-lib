@@ -1,0 +1,4 @@
+name: bozon
+depend: standard-library
+include: theories
+flags:
