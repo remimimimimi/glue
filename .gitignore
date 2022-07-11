@@ -2,3 +2,5 @@
 **/.*~undo-tree~
 /dist-newstyle
 /dist
+/app/MAlonzo
+/app/**/*.agdai
