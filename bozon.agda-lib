@@ -1,4 +1,4 @@
 name: bozon
 depend: standard-library
-include: theories
+include: app
 flags:
