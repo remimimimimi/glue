@@ -1,4 +1,4 @@
 name: bozon
-depend: standard-library
+depend: standard-library, agdarsec
 include: app
 flags:

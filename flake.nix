@@ -39,7 +39,19 @@
             haskellPackages.haskell-language-server # you must build it with your ghc to work
             ghcid
             cabal-install
-            (agda.withPackages (ps: [ ps.standard-library ]))
+            (agda.withPackages (ps: [
+              ps.standard-library
+              (ps.agdarsec.overrideAttrs (oldAttrs: rec {
+                version = "0.5.0";
+                src = fetchFromGitHub {
+                  owner = "gallais";
+                  repo = "agdarsec";
+                  rev = "v${version}";
+                  sha256 =
+                    "sha256-AQ+RJqcbDVWPqmtil8frIisKOTeTQacyY3QV052+t+c=";
+                };
+              }))
+            ]))
           ];
           # FIXME: Fix dependent-hashmap to fix this
           # inputsFrom = builtins.attrValues self.packages.${system};
