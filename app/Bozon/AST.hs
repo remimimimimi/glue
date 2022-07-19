@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Bozon.AST (Span (..), Node (..), Sexp (..), File (..)) where
+module Bozon.AST where
 
 import Data.Text
 import Numeric.Natural
@@ -15,9 +15,12 @@ data Node a = Node a Span
 instance Functor Node where
   fmap f (Node a s) = Node (f a) s
 
+data BracketKind = Circle | Curly | Square
+  deriving (Show, Eq)
+
 data Sexp
-  = -- | List of sexps with optinal prefix
-    List (Maybe (Node Text)) [Node Sexp]
+  = -- | List of sexps with optinal prefix and bracket type
+    List (Maybe (Node Text)) BracketKind [Node Sexp]
   | -- | Single atom
     Atom Text
   deriving (Show, Eq)

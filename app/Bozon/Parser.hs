@@ -1,8 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE TupleSections #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-
-{-# HLINT ignore "Use <$>" #-}
 
 module Bozon.Parser where
 
@@ -43,16 +42,25 @@ pAtom, pList, pSexp :: Parser (Node Sexp)
 pAtom = (Atom <$>) <$> pIdent
 pList = spanned $ do
   prefix <- optional pIdent
-  list <- between (char '(') (char ')') (pSexp `sepBy` sc)
-  return $ List prefix list
+  (bracketKind, list) <-
+    choice
+      -- TODO: Store brace style
+      [ (Circle,) <$> between (char '(') (char ')') (pSexp `sepBy` sc),
+        (Curly,) <$> between (char '{') (char '}') (pSexp `sepBy` sc),
+        (Square,) <$> between (char '[') (char ']') (pSexp `sepBy` sc)
+      ]
+  return $ List prefix bracketKind list
 pSexp = sc *> (try pList <|> pAtom) <* sc
+
+pLangName :: Parser (Node Text)
+pLangName = do
+  char '#'
+  name <- pIdent
+  char '\n'
+  return name
 
 pFile :: Parser File
 pFile = do
-  langName <- do
-    char '#'
-    name <- pIdent
-    char '\n'
-    return name
+  langName <- pLangName
   sExps <- pSexp `sepBy` sc
   return $ File langName sExps
