@@ -44,7 +44,6 @@ pList = spanned $ do
   prefix <- optional pIdent
   (bracketKind, list) <-
     choice
-      -- TODO: Store brace style
       [ (Circle,) <$> between (char '(') (char ')') (pSexp `sepBy` sc),
         (Curly,) <$> between (char '{') (char '}') (pSexp `sepBy` sc),
         (Square,) <$> between (char '[') (char ']') (pSexp `sepBy` sc)
