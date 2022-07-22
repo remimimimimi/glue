@@ -1,4 +1,0 @@
-name: bozon
-depend: standard-library, agdarsec
-include: app
-flags:
