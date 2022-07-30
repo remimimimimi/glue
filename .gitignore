@@ -1,6 +1,7 @@
+*~
+\#*
+.\#*
+.DS_Store
+compiled/
+/doc/
 .direnv
-**/.*~undo-tree~
-/dist-newstyle
-/dist
-/app/MAlonzo
-/app/**/*.agdai
