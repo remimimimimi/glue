@@ -22,8 +22,8 @@ jobs:
           variant: ${{ matrix.racket-variant }}
           version: ${{ matrix.racket-version }}
       - name: Installing glue and its dependencies
-        run: raco pkg install --no-docs --auto --name glue
+        run: cd glue && raco pkg install --no-docs --auto --name glue
       - name: Compiling glue and building its docs
-        run: raco setup --check-pkg-deps --unused-pkg-deps glue
+        run: cd glue && raco setup --check-pkg-deps --unused-pkg-deps glue
       - name: Testing glue
-        run: raco test -x -p glue
+        run: cd glue && raco test -x -p glue
