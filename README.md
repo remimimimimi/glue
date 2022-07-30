@@ -1,3 +1,3 @@
-Glue
+glue
 ====
 README text here.

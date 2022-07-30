@@ -1,10 +1,10 @@
 #lang scribble/manual
-@require[@for-label[Glue
+@require[@for-label[glue
                     racket/base]]
 
-@title{Glue}
+@title{glue}
 @author{remi}
 
-@defmodule[Glue]
+@defmodule[glue]
 
 Package Description Here
