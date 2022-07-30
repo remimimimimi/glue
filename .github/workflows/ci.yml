@@ -21,9 +21,9 @@ jobs:
           distribution: full
           variant: ${{ matrix.racket-variant }}
           version: ${{ matrix.racket-version }}
-      - name: Installing Glue and its dependencies
-        run: raco pkg install --no-docs --auto --name Glue
-      - name: Compiling Glue and building its docs
-        run: raco setup --check-pkg-deps --unused-pkg-deps Glue
-      - name: Testing Glue
-        run: raco test -x -p Glue
+      - name: Installing glue and its dependencies
+        run: raco pkg install --no-docs --auto --name glue
+      - name: Compiling glue and building its docs
+        run: raco setup --check-pkg-deps --unused-pkg-deps glue
+      - name: Testing glue
+        run: raco test -x -p glue
