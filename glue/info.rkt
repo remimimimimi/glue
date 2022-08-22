@@ -1,6 +1,6 @@
 #lang info
 (define collection "glue")
-(define deps '("base" "nanopass"))
+(define deps '("base" "turnstile"))
 (define build-deps '("scribble-lib" "racket-doc" "rackunit-lib"))
 (define scribblings '(("scribblings/glue.scrbl" ())))
 (define pkg-desc "Description Here")
